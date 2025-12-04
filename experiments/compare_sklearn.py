@@ -1,61 +1,49 @@
-import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.datasets import make_blobs
-from sklearn.cluster import MeanShift as SklearnMeanShift
-
+from sklearn.cluster import MeanShift
 from mean_shift_lab.mean_shift import MyMeanShift
-# Importujemy naszą klasę (dostosuj ścieżkę importu do swojej struktury folderów)
-# from twoja_nazwa_projektu.mean_shift import MyMeanShift
-# UWAGA: Aby powyższy import zadziałał, musisz mieć zainstalowany pakiet (pip install -e .)
-# lub tymczasowo wkleić klasę MyMeanShift do tego pliku.
 
-def run_experiment():
-    # 1. Generowanie sztucznych danych (3 klastry)
-    print("Generowanie danych...")
-    X, _ = make_blobs(n_samples=300, centers=3, cluster_std=0.6, random_state=0)
 
-    # Parametr bandwidth (promień) - musi być taki sam dla obu algorytmów
-    BANDWIDTH = 2.0
+def run():
+    # --- KONFIGURACJA DANYCH ---
+    # 1. Definiujemy środki grup, żeby były blisko siebie (trójkąt)
+    centers = [[1, 1], [3, 3], [5, 1]]
 
-    # 2. Uruchomienie Naszej Implementacji
-    print("Uruchamianie MyMeanShift...")
-    my_ms = MyMeanShift(bandwidth=BANDWIDTH)
-    my_ms.fit(X)
+    # 2. Generujemy dane:
+    # n_samples=1000 -> dużo punktów
+    # cluster_std=1.0 -> szerokie grupy
+    X, _ = make_blobs(n_samples=1000, centers=centers, cluster_std=1.0)
 
-    # 3. Uruchomienie Implementacji Scikit-Learn
-    print("Uruchamianie Sklearn MeanShift...")
-    # Sklearn wymaga jawnego estymowania bandwidth lub podania go. Podajemy, żeby porównanie było uczciwe.
-    sklearn_ms = SklearnMeanShift(bandwidth=BANDWIDTH, bin_seeding=True)
-    sklearn_ms.fit(X)
+    BANDWIDTH =1.5
 
-    # 4. Wizualizacja Wyników
+    print(f"Uruchamianie MyMeanShift (bandwidth={BANDWIDTH})...")
+    my = MyMeanShift(bandwidth=BANDWIDTH)
+    my.fit(X)
+
+    print("Uruchamianie Sklearn...")
+    sk = MeanShift(bandwidth=BANDWIDTH, bin_seeding=False)
+    sk.fit(X)
+
+    # --- RYSOWANIE ---
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
 
-    # Wykres Nasz
-    ax1.scatter(X[:, 0], X[:, 1], c=my_ms.labels_, cmap='viridis', marker='o')
-    ax1.scatter(my_ms.centroids_[:, 0], my_ms.centroids_[:, 1], c='red', marker='x', s=200, label='Centroidy')
-    ax1.set_title(f'MyMeanShift\nZnaleziono klastrów: {len(my_ms.centroids_)}')
-    ax1.legend()
-    ax1.grid(True)
-
-    # Wykres Scikit-Learn
-    ax2.scatter(X[:, 0], X[:, 1], c=sklearn_ms.labels_, cmap='viridis', marker='o')
-    ax2.scatter(sklearn_ms.cluster_centers_[:, 0], sklearn_ms.cluster_centers_[:, 1], c='red', marker='x', s=200,
+    # Wykres 1: NASZ
+    ax1.scatter(X[:, 0], X[:, 1], c=my.labels_, s=15, alpha=0.6)
+    ax1.scatter(my.centroids_[:, 0], my.centroids_[:, 1], marker='x', color='red', s=200, linewidths=3,
                 label='Centroidy')
-    ax2.set_title(f'Sklearn MeanShift\nZnaleziono klastrów: {len(sklearn_ms.cluster_centers_)}')
+    ax1.set_title(f"Mój algorytm: {len(my.centroids_)} klastry")
+    ax1.legend()
+
+    # Wykres 2: Sklearn
+    ax2.scatter(X[:, 0], X[:, 1], c=sk.labels_, s=15, alpha=0.6)
+    ax2.scatter(sk.cluster_centers_[:, 0], sk.cluster_centers_[:, 1], marker='x', color='red', s=200, linewidths=3,
+                label='Centroidy')
+    ax2.set_title(f"Sklearn: {len(sk.cluster_centers_)} klastry")
     ax2.legend()
-    ax2.grid(True)
 
-    plt.suptitle("Porównanie implementacji Mean-Shift")
+    plt.suptitle("Porównanie na gęstych, bliskich danych", fontsize=16)
     plt.show()
-
-    # 5. Raport tekstowy
-    print("-" * 30)
-    print(f"My Implementation Centers: {len(my_ms.centroids_)}")
-    print(f"Sklearn Implementation Centers: {len(sklearn_ms.cluster_centers_)}")
-    print("-" * 30)
 
 
 if __name__ == "__main__":
-    # Zakładając, że klasa MyMeanShift jest dostępna
-    run_experiment()
+    run()

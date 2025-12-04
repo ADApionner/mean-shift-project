@@ -1,24 +1,17 @@
-import pytest
 import numpy as np
-from sklearn.datasets import make_blobs
-
-
 from mean_shift_lab.mean_shift import MyMeanShift
 
-def test_simple_clustering():
-    """Sprawdza, czy algorytm poprawnie znajduje 2 oczywiste klastry."""
-    # Tworzymy 2 bardzo odseparowane klastry
-    X = np.array([
-        [1, 1], [1.1, 1.1], [0.9, 0.9],  # Grupa 1
-        [10, 10], [10.1, 10.1], [9.9, 9.9]  # Grupa 2
-    ])
+
+def test_algorithm():
+    # Dane: dwie grupy punktów daleko od siebie
+    X = np.array([[1, 1], [1.1, 1.1], [10, 10], [10.1, 10.1]])
 
     ms = MyMeanShift(bandwidth=2.0)
     ms.fit(X)
 
-    # Powinny być dokładnie 2 centroidy
+    # Musi znaleźć 2 klastry
     assert len(ms.centroids_) == 2
-    # Etykiety powinny dzielić zbiór na pół (np. 0,0,0 i 1,1,1)
+    # Etykiety muszą dzielić zbiór 2 na 2 (np. [0,0, 1,1])
     assert len(np.unique(ms.labels_)) == 2
 
 
