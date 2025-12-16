@@ -21,7 +21,7 @@ def run():
     my.fit(X)
 
     print("Running Sklearn...")
-    sk = MeanShift(bandwidth=BANDWIDTH, bin_seeding=False)
+    sk = MeanShift(bandwidth=BANDWIDTH, bin_seeding=True)
     sk.fit(X)
 
     # --- PLOTTING ---
