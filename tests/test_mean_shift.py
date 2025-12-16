@@ -24,3 +24,17 @@ def test_single_cluster():
 
     assert len(ms.centroids_) == 1
 
+def test_fit_returns_self():
+
+    """Compatibility with sklearn API - fit method must return self."""
+
+    X = np.array([[1, 1], [2, 2]])
+
+    ms = MyMeanShift()
+
+    result = ms.fit(X)
+
+    assert result is ms
+
+
+
