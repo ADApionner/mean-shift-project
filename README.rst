@@ -37,6 +37,11 @@ mean_shift_lab
 
 This project implements the Mean Shift clustering algorithm from scratch and compares its performance and accuracy against the reference implementation in ``scikit-learn``.
 
+Authors:
+
+Programmer: Wiktor Stawiski
+Tester: Antoni Bajor
+
 Repository Structure
 ====================
 
