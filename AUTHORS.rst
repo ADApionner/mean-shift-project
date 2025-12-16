@@ -2,4 +2,5 @@
 Contributors
 ============
 
-* Wiktor <wiktorstawiski@gmail.com>
+* Wiktor Stawiski<wiktorstawiski@gmail.com>
+* Antoni Bajor
